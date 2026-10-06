@@ -1,0 +1,112 @@
+{
+  "_comment": "脱敏合成夹具：脏数据 —— 段文本为 null、无 section、date 非 ISO8601；要求部分成功，坏件入已跳过清单且带原因。",
+  "resourceType": "Bundle",
+  "type": "collection",
+  "entry": [
+    {
+      "fullUrl": "urn:uuid:WARD-F-001-CONSENT-01",
+      "resource": {
+        "resourceType": "Composition",
+        "id": "WARD-F-001-CONSENT-01",
+        "status": "preliminary",
+        "title": "<脱敏样例文书>",
+        "identifier": [
+          {
+            "system": "https://his.example-hospital.invalid/fhir/identifier/encounter",
+            "value": "WARD-F-001"
+          }
+        ],
+        "date": "2026-03-02T08:30:00+08:00",
+        "authoredOn": "2026-03-02T08:55:00+08:00",
+        "type": {
+          "coding": [
+            {
+              "system": "https://example-hospital.invalid/fhir/CodeSystem/doc-type",
+              "code": "restraint_consent"
+            }
+          ]
+        },
+        "author": [
+          {
+            "reference": "Practitioner/<EXAMPLE_PRACTITIONER>"
+          }
+        ],
+        "section": [
+          {
+            "title": "约束事由",
+            "text": "约束事由：日间激越。"
+          },
+          {
+            "title": "患方知情同意",
+            "text": null
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:WARD-F-001-RECORD-01",
+      "resource": {
+        "resourceType": "Composition",
+        "id": "WARD-F-001-RECORD-01",
+        "status": "preliminary",
+        "title": "<脱敏样例文书>",
+        "identifier": [
+          {
+            "system": "https://his.example-hospital.invalid/fhir/identifier/encounter",
+            "value": "WARD-F-001"
+          }
+        ],
+        "date": "2026-03/02 23:40",
+        "type": {
+          "coding": [
+            {
+              "system": "https://example-hospital.invalid/fhir/CodeSystem/doc-type",
+              "code": "restraint_record"
+            }
+          ]
+        },
+        "author": [
+          {
+            "reference": "Practitioner/<EXAMPLE_PRACTITIONER>"
+          }
+        ],
+        "section": [
+          {
+            "title": "约束经过",
+            "text": "约束起始时间：2026-03-02 23:40。\n约束等级：二级保护。\n执行护士：<EXAMPLE_NURSE>。\n观察记录：约束期间生命体征平稳。"
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:WARD-F-001-RELEASE-01",
+      "resource": {
+        "resourceType": "Composition",
+        "id": "WARD-F-001-RELEASE-01",
+        "status": "preliminary",
+        "title": "<脱敏样例文书>",
+        "identifier": [
+          {
+            "system": "https://his.example-hospital.invalid/fhir/identifier/encounter",
+            "value": "WARD-F-001"
+          }
+        ],
+        "date": "2026-03-03T06:10:00+08:00",
+        "type": {
+          "coding": [
+            {
+              "system": "https://example-hospital.invalid/fhir/CodeSystem/doc-type",
+              "code": "restraint_release"
+            }
+          ]
+        },
+        "author": [
+          {
+            "reference": "Practitioner/<EXAMPLE_PRACTITIONER>"
+          }
+        ],
+        "section": []
+      }
+    }
+  ]
+}

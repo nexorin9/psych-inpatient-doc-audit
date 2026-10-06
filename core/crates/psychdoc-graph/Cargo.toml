@@ -1,0 +1,17 @@
+[package]
+name = "psychdoc-graph"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+chrono = { workspace = true }
+serde = { workspace = true }
+thiserror = { workspace = true }
+psychdoc-model = { path = "../psychdoc-model" }
+psychdoc-rules = { path = "../psychdoc-rules" }
+
+[dev-dependencies]
+serde_json = { workspace = true }
+serde_yaml = { workspace = true }
+psychdoc-parse = { path = "../psychdoc-parse" }

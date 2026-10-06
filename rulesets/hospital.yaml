@@ -1,0 +1,375 @@
+# 精神科住院文书审查 · 院内规则集（院级）
+#
+# 版本化：加载时对**本文件内容**算 sha256，随每次审查结果落盘，
+# 供质控办按当时版本回溯复核「这份病历当年按哪一版审的」。
+# 改动本文件任意一字节 → 哈希改变 → 后续审查结果自动与旧批次区分开。
+#
+# 三级级联覆盖：hospital（院） → department（科室） → personal（个人），
+# 后者覆盖前者。每条生效规则都会记住「最终由哪一层说了算」，
+# 清单上直接显示为「规则来源：QC-PSY-nn（科室级，覆盖 院级）」。
+#
+# 加载期强校验（任一不过 → 整批拒绝启动，**不退化为「无规则 = 全部通过」**）：
+#   - 引用了未定义的文书类型（applies_to / dependencies 两侧）
+#   - 同一层内规则码重复声明
+#   - 覆盖成环（科室 ↔ 个人）或一层被多层 extends
+#   - 规则缺院内规范条款依据
+#   - 病区豁免缺病区码 / 缺理由 / 引用了不存在的规则码（死豁免）
+#   - 并列容差档位不在 0/1/5 内 / 缺院内理由 / 引用未定义文书类型 / 件对重复声明
+#
+# 维护分工：
+#   templates —— 院内文书类型字典 + 模板必填字段表（病案室维护）
+#   hospital.rules —— 规则表（质控办维护），每条规则必须带规范条款依据
+#   per-ward-ignores —— 病区级豁免，必须写理由（护士长 / 质控办共同维护）
+#   chronology.tie-tolerance —— 跨文书时序的并列容差，必须写理由（护理部 / 质控办共同维护）
+
+version: "0.6.0"
+
+templates:
+  restraint_consent:
+    display: 约束知情同意
+    fields:
+      - key: 约束事由
+        section: 约束事由
+        required: true
+      - key: 患方意见
+        section: 患方知情同意
+        required: true
+      - key: 约束起始时间
+        section: 患方知情同意
+        required: true
+        value_type: datetime
+      - key: 患方签字
+        section: 患方知情同意
+        required: true
+
+  restraint_record:
+    display: 约束记录
+    fields:
+      - key: 约束起始时间
+        section: 约束经过
+        required: true
+      - key: 执行护士
+        section: 约束经过
+        required: true
+      - key: 约束等级
+        section: 约束经过
+        required: true
+        value_type: text
+        allowed: ["一级保护", "二级保护", "三级保护"]
+      # 纸质表单上印的就是「约束时长：____ 分钟」，因此单位随表单走。
+      # 不填单位（只写「30」）在归档时无法核算是 30 分钟还是 30 小时。
+      # 「观察记录」是病区随手写的自由文本，允许落在任意段落：
+      # 因此它**不声明 section**。同一个键出现在多段时会走「字段归属歧义」
+      # 交人工，而不是被工具随手挑一段当成真值。
+      - key: 观察记录
+        required: false
+      - key: 约束时长
+        section: 约束经过
+        required: false
+        value_type: number
+        min: 1
+        max: 720
+        unit: 分钟
+
+  restraint_release:
+    display: 约束解除记录
+    fields:
+      - key: 解除时间
+        section: 解除经过
+        required: true
+        value_type: datetime
+      - key: 解除依据
+        section: 解除经过
+        required: true
+      - key: 执行护士
+        section: 解除经过
+        required: true
+
+  assessment_report:
+    display: 评估报告
+    fields:
+      - key: 评估时间
+        section: 入院评估
+        required: true
+        value_type: datetime
+      - key: 风险等级
+        section: 入院评估
+        required: true
+        value_type: text
+        allowed: ["低风险", "中低风险", "中高风险", "高风险"]
+      - key: 评估医师
+        section: 入院评估
+        required: true
+
+  sign_page:
+    display: 签署页
+    fields:
+      - key: 护士签字
+        section: 签署页
+        required: true
+      - key: 医师签字
+        section: 签署页
+        required: true
+
+  nursing_record:
+    display: 护理记录
+    fields:
+      - key: 巡视时间
+        section: 护理记录
+        required: false
+      - key: 病情描述
+        section: 护理记录
+        required: true
+
+  inpatient_record:
+    display: 住院记录
+    fields:
+      - key: 入院时间
+        section: 入院记录
+        required: true
+      - key: 诊断
+        section: 入院记录
+        required: true
+
+hospital:
+  # 院内文书类型字典：码 → 中文名
+  doc_types:
+    inpatient_record: "住院记录"
+    nursing_record: "护理记录"
+    restraint_consent: "约束知情同意"
+    restraint_record: "约束记录"
+    restraint_release: "约束解除记录"
+    assessment_report: "评估报告"
+    sign_page: "签署页"
+
+  # 文书依赖规范：归档核齐视图的边来源
+  dependencies:
+    - from: restraint_record
+      to: restraint_consent
+      requires: true
+    - from: restraint_release
+      to: restraint_record
+      requires: true
+    - from: assessment_report
+      to: inpatient_record
+      requires: false
+
+  rules:
+    - code: "QC-PSY-01"
+      severity: blocking
+      title: "件内必填字段缺失"
+      applies_to:
+        - restraint_consent
+        - restraint_record
+        - restraint_release
+        - assessment_report
+        - sign_page
+      basis: "《精神科住院护理常规》第 4.2 条：约束类文书须逐项填写并由患方签字确认"
+    - code: "QC-PSY-02"
+      severity: blocking
+      title: "字段值形状不符"
+      applies_to:
+        - restraint_consent
+        - restraint_record
+        - restraint_release
+        - assessment_report
+      basis: "《精神科住院护理常规》第 5.1 条：评估与约束类文书的日期、时长须按表单标注格式填写，全角数字与月日序不予采信"
+    - code: "QC-PSY-03"
+      severity: blocking
+      title: "取值域越界"
+      applies_to:
+        - restraint_record
+        - assessment_report
+      basis: "《精神科住院护理常规》第 5.3 条：约束等级与风险等级须在院内表单勾选项范围内填写"
+    - code: "QC-PSY-04"
+      severity: blocking
+      title: "单位 / 量纲错配"
+      applies_to:
+        - restraint_record
+      basis: "《精神科住院护理常规》第 5.4 条：约束时长按表单标注以分钟计量，不得以其它单位或缺单位填写"
+    # —— 执行器 B：跨文书时间序与签署齐备性 ——
+    #
+    # 这四码判的不是「一件填得对不对」，而是「同一次住院的几件之间对不对得上」，
+    # 因此必须把多件按 encounter_alias join 成一条事件时间线才判得出来。
+    #
+    # 三条口径（缺一不可，否则会出现假结论）：
+    #   - 缺时刻 → 整条跳过并记原因，绝不拿当前时间或零值兜底；
+    #   - 两时刻完全相等 / 精度不足以分辨先后 → 不判倒挂，但必须留下可回查的记录；
+    #   - 任一件绑定不唯一（跨系统同名导出）→ 整条跳过，不取第一件当答案。
+    - code: "QC-PSY-05"
+      severity: blocking
+      title: "事件与记录时序倒挂（解除早于开始）"
+      applies_to:
+        - restraint_record
+        - restraint_release
+      basis: "《精神科住院护理常规》第 6.1 条：约束解除记录填写的解除时间不得早于约束记录填写的约束起始时间，二者倒挂的病历不得直接归档"
+    - code: "QC-PSY-06"
+      severity: blocking
+      title: "评估与医嘱时序矛盾（评估晚于首次约束）"
+      applies_to:
+        - assessment_report
+        - restraint_record
+      basis: "《精神科住院护理常规》第 6.2 条：首次约束开始前应当已完成入院评估，评估时间晚于首次约束起始时间的须补记说明"
+    - code: "QC-PSY-07"
+      severity: blocking
+      title: "约束与签署时序错误（签署晚于约束开始）"
+      applies_to:
+        - restraint_consent
+        - restraint_record
+      basis: "《精神科住院护理常规》第 6.3 条：患方知情同意须在约束开始前完成签署，签署时刻晚于约束起始时间的按先约束后知情处理"
+    - code: "QC-PSY-08"
+      severity: blocking
+      title: "签署齐备性（已签但无签署时刻）"
+      applies_to:
+        - restraint_consent
+        - restraint_release
+        - assessment_report
+        - sign_page
+      basis: "《精神科住院护理常规》第 4.5 条：签署齐备性含签署人签字与可核对的签署时刻两项；只留签字未留签署时刻的，事后无法核对签署与约束的先后"
+
+# 规则码 → 规范条款依据（执行期取用；与各层 rules[].basis 同源，
+# 独立成表便于按码做豁免与版本回溯）
+rule_basis:
+  QC-PSY-01: "《精神科住院护理常规》第 4.2 条：约束类文书须逐项填写并由患方签字确认"
+  QC-PSY-02: "《精神科住院护理常规》第 5.1 条：评估与约束类文书的日期、时长须按表单标注格式填写，全角数字与月日序不予采信"
+  QC-PSY-03: "《精神科住院护理常规》第 5.3 条：约束等级与风险等级须在院内表单勾选项范围内填写"
+  QC-PSY-04: "《精神科住院护理常规》第 5.4 条：约束时长按表单标注以分钟计量，不得以其它单位或缺单位填写"
+  QC-PSY-05: "《精神科住院护理常规》第 6.1 条：约束解除记录填写的解除时间不得早于约束记录填写的约束起始时间，二者倒挂的病历不得直接归档"
+  QC-PSY-06: "《精神科住院护理常规》第 6.2 条：首次约束开始前应当已完成入院评估，评估时间晚于首次约束起始时间的须补记说明"
+  QC-PSY-07: "《精神科住院护理常规》第 6.3 条：患方知情同意须在约束开始前完成签署，签署时刻晚于约束起始时间的按先约束后知情处理"
+  QC-PSY-08: "《精神科住院护理常规》第 4.5 条：签署齐备性含签署人签字与可核对的签署时刻两项；只留签字未留签署时刻的，事后无法核对签署与约束的先后"
+
+# —— 科室级覆盖 ——
+#
+# 本层当前为空：QC-PSY-01 沿用院级口径，生效来源显示为「院级」。
+# 级联机制本身由 core/crates/psychdoc-rules 的单测与 shipped_ruleset.rs 覆盖，
+# 交付规则集不预置任何科室放宽口径——「哪些文书可以先提示后补」是质控办与
+# 护理部的业务决定，不该由工具的默认配置替他们做。
+#
+# 将来要启用时，把下面的注释块取消注释即可（YAML 注释掉整个列表是合法的）。
+# 生效后清单上会显示「规则来源：QC-PSY-01（科室级，覆盖 院级）」。
+#
+# 两条容易踩的坑，改之前先读：
+#
+#  1) applies_to 是**整体替换**，不与上级并入。院级把 QC-PSY-01 限定在
+#     约束 / 评估 / 签署这五类文书上；科室若只想放宽其中的住院记录与护理记录，
+#     必须把范围**完整重写**一遍。只写 severity 而不写 applies_to 的话，
+#     作用范围会原样沿用院级——约束知情同意的患方签字仍会被降级，
+#     而那是本系统最不该松的一类。
+#
+#  2) 只想改一个字段时，不写这个字段即可（severity / title / basis 都会逐字段继承）。
+#     真要扩到全院，显式写 applies_to: ["*"]。
+#
+# department:
+#   rules:
+#     - code: "QC-PSY-01"
+#       severity: notice
+#       title: "件内必填字段缺失（住院记录 / 护理记录先提示后补）"
+#       applies_to:
+#         - inpatient_record
+#         - nursing_record
+#       basis: "《精神科住院护理常规》第 4.2 条；本院精神科一病区 2026-Q1 带教期口径：住院记录与护理记录先提示后补"
+
+# —— 个人级覆盖 ——
+# 本轮留空：个人级规则由各病区文书专员按需下发。
+personal: {}
+
+# —— 病区级豁免 ——
+# 必须写理由。缺理由 → 加载期直接拒绝（E_RULESET_INVALID），
+# 因为「这条为什么不报」是质控办最常追问、又最难自己查出来的问题。
+# 引用不存在的规则码同样拒绝（死豁免比没有豁免更危险）。
+#
+# 四类条件：ward(s) / doc_types / codes / time_window。
+# 写了的几类按 combine 组合（all 默认 / any）；没写的维度不受约束。
+# codes / doc_types / time_window 三类至少写一类 —— 全不写等于关掉审查。
+#
+# effect 两级语义，别混用：
+#   not_applicable       整条不适用 —— 该病区真不办这项业务，不进命中统计。
+#                        误用：把「不阻断」写成这个 → 质控办统计命中数时少算。
+#   downgrade_to_notice  降级为提示 —— 业务照办，只是本阶段不阻断，仍计入命中。
+#                        误用：把「真不适用」写成这个 → 病区收到一条改不掉的提示。
+#
+# 多条同时命中时取**条件最具体**的一条（类数多 → 取值少 → 先声明的赢），
+# 其余记进该条的 superseded，不丢弃。谓词带时间窗而件上没有可用时刻时
+# **判不出来**：既不豁免也不当成通过，记 waiver_skipped 等人工核。
+#
+# 形状示例（本轮**不启用**，仅示范）：
+# per-ward-ignores:
+#   # 开放病区不收约束文书 —— 整条不适用
+#   - ward: "WARD-B"
+#     codes: ["QC-PSY-01"]
+#     reason: "开放病区不收约束知情同意，本病区无此业务"
+#
+#   # 只对约束知情同意这一类文书降级 —— 仍计入命中
+#   - ward: "WARD-F"
+#     doc_types: ["restraint_consent"]
+#     codes: ["QC-PSY-01"]
+#     effect: downgrade_to_notice
+#     reason: "带教期口径：患方签字由护士长统一签署，本轮只提示不阻断"
+#
+#   # 试点期窗口 —— 两端都是绝对时刻，跨零点按真实时间比
+#   - ward: "WARD-G"
+#     codes: ["QC-PSY-08"]
+#     time_window:
+#       from: "2026-03-02T22:00:00+08:00"
+#       to: "2026-03-03T07:00:00+08:00"
+#     reason: "跨零点值守时段口径"
+#
+#   # 多个病区共用一条；任一条件成立即放行
+#   - wards: ["WARD-H", "WARD-I"]
+#     doc_types: ["restraint_record"]
+#     combine: any
+#     reason: "纸质表单口径与字典不一致，本轮先提示"
+per-ward-ignores: []
+
+# —— 跨文书时间序的并列容差（chronology）——
+#
+# 跨文书时序规则（QC-PSY-05~07）判的是**同一次住院的几件之间**的先后。
+# 有一类现场顺序是正常的、但字面上「差了先后」：约束开始后护士先在解除栏
+# 落笔、回头再补起始时间，两张纸的时间戳就会差几分钟。这属于补记，
+# 不是时序倒挂——记一条阻断级「时序倒挂」会逼护士长去改一份本来没错的病历。
+#
+# 因此按**件对**（顺序无关）开一个窄口子，并要求写清院内理由：
+#   - 档位只有 0 / 1 / 5 分钟三档：容差能随手写 30 分钟，这条规则就等于关了，
+#     而这个决定会藏在规则集里没人发现；
+#   - 未列出的件对一律 0 分钟从严判定；
+#   - 落在容差内的**不判违规，但仍记账**（见 CLI / UI「并列容差内」一段），
+#     护士长问「这一条为什么没报」时答得出来。
+chronology:
+  default-minutes: 0
+  tie-tolerance:
+    - pair: ["restraint_record", "restraint_release"]
+      minutes: 5
+      reason: "同班次内先在解除栏落笔、回头补记约束起始时间，属正常补记顺序；5 分钟内的先后不判时序倒挂"
+
+# —— 根因码族（去重与择优）——
+#
+# 同一个字段可能被不止一条规则命中，而它们的整改动作其实只有一件：把这一栏改对。
+# 同一处刷两行，护士长会以为要改两件事；规则集越长刷得越凶。
+# 归成一族后，同一处只保留**最具体**的那条，其余折叠起来（可展开，不丢弃）。
+#
+# codes 由泛到具体排列——**越靠后越具体，择优时越优先保留**：
+#   QC-PSY-01 必填缺失  →  QC-PSY-02 值形状不符  →  QC-PSY-03 取值域越界
+# 越具体的码说清了「到底该怎么改」，护士长照着改一次就够。
+#
+# 维护纪律（加载期强校验，违反即 E_RULESET_INVALID 整批拒绝）：
+#   - 族标识不得重复（族标识是去重键的一部分）
+#   - 一个码只能属于一个族；族内也不得重复列出
+#   - 成员必须是已定义的规则码（死成员 = 永不参与去重的空配置）
+#   - 成员至少 2 条（单条族不构成去重，配了等于没配）
+#   - 每族必须写院内理由（「为什么这两条算同一件事」要能回答）
+#
+# 本表由质控办维护：哪两条是同一根因，是业务决定，不该由工具的默认配置替他们做。
+# 未归族的码**不参与折叠**（宁可同处多报一行，也不替质控办猜一个族）。
+code-families:
+  - family: "field-value"
+    label: "件内字段取值"
+    # 由泛到具体：必填缺失 → 值形状不符 → 取值域越界 → 单位 / 量纲错配
+    #
+    # 为什么 04（单位错配）排在 03（取值域越界）之后：
+    # 「约束时长：1000 小时」会同时命中两条，但 03 的「越出允许范围」是**派生**结论
+    # ——数字之所以看着越界，是因为单位填错了。04 点名了真正的错处，
+    # 护士长照着改一次（写成「1000 分钟」或按实际分钟数重填）就够，
+    # 留着 03 只会让人以为范围本身也定错了。
+    codes: ["QC-PSY-01", "QC-PSY-02", "QC-PSY-03", "QC-PSY-04"]
+    reason: "同一栏的整改动作只有一个：改成院内规范写法；四码由泛到具体，最具体的一条说清了到底该怎么改，同一处不必刷多行"

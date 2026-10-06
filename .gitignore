@@ -1,0 +1,54 @@
+# 凭据与本地配置
+.env
+.env.*
+!.env.example
+
+# Python
+venv/
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+
+# Rust
+target/
+**/target/
+
+# 前端 / 构建产物
+node_modules/
+dist/
+build/
+coverage/
+.next/
+
+# 运行时数据与日志
+data/
+logs/
+*.log
+*.tmp
+*.temp
+*.db
+*.sqlite
+*.sqlite3
+
+# round 元数据（不进入发布仓库）
+score.json
+progress.txt
+task.json
+
+# 本机构建产物：cargo build 出来的 libpsychdoc_ffi.{dylib,so} 及其拷贝。
+# 源码在 core/crates/psychdoc-ffi/，产物不入库（每个平台的 ABI 不同）。
+bindings/
+*.so
+*.dylib
+*.pyd
+
+# 运行期缓存与本机 sqlite
+*.sqlite3
+
+# 截图脚本的临时工作目录（拼图用的临时输入夹具 + 落库的 sqlite）
+.shot-work/

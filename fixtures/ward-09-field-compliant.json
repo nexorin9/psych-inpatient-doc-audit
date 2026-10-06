@@ -1,0 +1,119 @@
+{
+  "_comment": "脱敏合成夹具：与 ward-08 同场景但全部合规，用于件-字段类规则的误报守卫（跑出 0 条才算规则没写歪）。不含任何真实患者标识。",
+  "resourceType": "Bundle",
+  "type": "collection",
+  "entry": [
+    {
+      "fullUrl": "urn:uuid:WARD-G-001-RECORD-01",
+      "resource": {
+        "resourceType": "Composition",
+        "id": "WARD-G-001-RECORD-01",
+        "status": "preliminary",
+        "title": "<脱敏样例文书>",
+        "date": "2026-03-02T23:40:00+08:00",
+        "authoredOn": "2026-03-03T00:30:00+08:00",
+        "identifier": [
+          {
+            "system": "https://his.example-hospital.invalid/fhir/identifier/encounter",
+            "value": "WARD-G-001"
+          }
+        ],
+        "type": {
+          "coding": [
+            {
+              "system": "https://example-hospital.invalid/fhir/CodeSystem/doc-type",
+              "code": "restraint_record"
+            }
+          ]
+        },
+        "author": [
+          {
+            "reference": "Practitioner/<EXAMPLE_PRACTITIONER>"
+          }
+        ],
+        "section": [
+          {
+            "title": "约束经过",
+            "text": "约束起始时间：2026-03-02 23:40。\n约束等级：二级保护。\n执行护士：<EXAMPLE_NURSE>。\n约束时长：120 分钟。"
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:WARD-G-001-ASSESS-01",
+      "resource": {
+        "resourceType": "Composition",
+        "id": "WARD-G-001-ASSESS-01",
+        "status": "preliminary",
+        "title": "<脱敏样例文书>",
+        "date": "2026-03-02T09:00:00+08:00",
+        "authoredOn": "2026-03-02T09:40:00+08:00",
+        "identifier": [
+          {
+            "system": "https://his.example-hospital.invalid/fhir/identifier/encounter",
+            "value": "WARD-G-001"
+          }
+        ],
+        "type": {
+          "coding": [
+            {
+              "system": "https://example-hospital.invalid/fhir/CodeSystem/doc-type",
+              "code": "assessment_report"
+            }
+          ]
+        },
+        "author": [
+          {
+            "reference": "Practitioner/<EXAMPLE_PRACTITIONER>"
+          }
+        ],
+        "section": [
+          {
+            "title": "入院评估",
+            "text": "评估时间：2026-03-02 09:00。\n风险等级：中高风险。\n评估医师：<EXAMPLE_PRACTITIONER>。"
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:WARD-G-001-CONSENT-01",
+      "resource": {
+        "resourceType": "Composition",
+        "id": "WARD-G-001-CONSENT-01",
+        "status": "preliminary",
+        "title": "<脱敏样例文书>",
+        "date": "2026-03-02T08:30:00+08:00",
+        "authoredOn": "2026-03-02T08:52:00+08:00",
+        "identifier": [
+          {
+            "system": "https://his.example-hospital.invalid/fhir/identifier/encounter",
+            "value": "WARD-G-001"
+          }
+        ],
+        "type": {
+          "coding": [
+            {
+              "system": "https://example-hospital.invalid/fhir/CodeSystem/doc-type",
+              "code": "restraint_consent"
+            }
+          ]
+        },
+        "author": [
+          {
+            "reference": "Practitioner/<EXAMPLE_PRACTITIONER>"
+          }
+        ],
+        "section": [
+          {
+            "title": "约束事由",
+            "text": "约束事由：夜间反复冲动，需短时保护。\n保护等级：二级保护。"
+          },
+          {
+            "title": "患方知情同意",
+            "text": "患方意见：已知情同意，同意按护理常规采取保护措施。\n约束起始时间：2026-03-02 23:40。\n执行护士：<EXAMPLE_NURSE>。\n患方签字：<EXAMPLE_SIGNATURE>。"
+          }
+        ]
+      }
+    }
+  ]
+}

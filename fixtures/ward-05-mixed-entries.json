@@ -1,0 +1,115 @@
+{
+  "_comment": "脱敏合成夹具：混合 entry —— 非文书正文附件 / 字典外类型码 / 缺住院别名 / 1 件正常件，用于过滤原因可核对。",
+  "resourceType": "Bundle",
+  "type": "collection",
+  "entry": [
+    {
+      "fullUrl": "urn:uuid:WARD-E-001-CONSENT-01",
+      "resource": {
+        "resourceType": "Composition",
+        "id": "WARD-E-001-CONSENT-01",
+        "status": "preliminary",
+        "title": "<脱敏样例文书>",
+        "identifier": [
+          {
+            "system": "https://his.example-hospital.invalid/fhir/identifier/encounter",
+            "value": "WARD-E-001"
+          }
+        ],
+        "date": "2026-03-02T08:30:00+08:00",
+        "authoredOn": "2026-03-02T08:50:00+08:00",
+        "type": {
+          "coding": [
+            {
+              "system": "https://example-hospital.invalid/fhir/CodeSystem/doc-type",
+              "code": "restraint_consent"
+            }
+          ]
+        },
+        "author": [
+          {
+            "reference": "Practitioner/<EXAMPLE_PRACTITIONER>"
+          }
+        ],
+        "section": [
+          {
+            "title": "约束事由",
+            "text": "约束事由：夜间反复冲动，需短时保护。\n保护等级：二级保护。"
+          },
+          {
+            "title": "患方知情同意",
+            "text": "患方意见：已知情同意，同意按护理常规采取保护措施。\n约束起始时间：2026-03-02 23:40。\n执行护士：<EXAMPLE_NURSE>。\n患方签字："
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:WARD-E-001-MYSTERY-01",
+      "resource": {
+        "resourceType": "Composition",
+        "id": "WARD-E-001-MYSTERY-01",
+        "status": "preliminary",
+        "title": "<脱敏样例文书>",
+        "identifier": [
+          {
+            "system": "https://his.example-hospital.invalid/fhir/identifier/encounter",
+            "value": "WARD-E-001"
+          }
+        ],
+        "date": "2026-03-02T08:35:00+08:00",
+        "type": {
+          "coding": [
+            {
+              "system": "https://example-hospital.invalid/fhir/CodeSystem/doc-type",
+              "code": "ward_transfer_form"
+            }
+          ]
+        },
+        "author": [
+          {
+            "reference": "Practitioner/<EXAMPLE_PRACTITIONER>"
+          }
+        ],
+        "section": [
+          {
+            "title": "入院评估",
+            "text": "评估时间：2026-03-02 09:00。\n风险等级：中高风险。\n评估医师：<EXAMPLE_PRACTITIONER>。"
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:WARD-E-001-NOALIAS-01",
+      "resource": {
+        "resourceType": "Composition",
+        "id": "WARD-E-001-NOALIAS-01",
+        "status": "preliminary",
+        "type": {
+          "coding": [
+            {
+              "code": "restraint_consent"
+            }
+          ]
+        },
+        "section": [
+          {
+            "title": "约束事由",
+            "text": "约束事由：试填。"
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "DocumentReference",
+        "id": "WARD-E-001-ATTACH-01"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Provenance",
+        "id": "WARD-E-001-PROV-01"
+      }
+    }
+  ]
+}

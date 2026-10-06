@@ -1,0 +1,32 @@
+[package]
+name = "psychdoc"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "精神科住院文书审查系统 · 无 GUI 回归与运维通道（CLI）"
+
+[[bin]]
+name = "psychdoc"
+path = "src/main.rs"
+
+[dependencies]
+serde = { workspace = true }
+serde_json = { workspace = true }
+serde_yaml = { workspace = true }
+chrono = { workspace = true }
+sha2 = { workspace = true }
+anyhow = { workspace = true }
+thiserror = { workspace = true }
+psychdoc-model = { path = "../psychdoc-model" }
+psychdoc-parse = { path = "../psychdoc-parse" }
+psychdoc-rules = { path = "../psychdoc-rules" }
+psychdoc-store = { path = "../psychdoc-store" }
+psychdoc-graph = { path = "../psychdoc-graph" }
+psychdoc-fhir = { path = "../psychdoc-fhir" }
+
+# Task 40 的端到端主路径测试要打**桌面壳真正调用的那一层**（`api::*`），
+# 而不是重造一份「像界面的」调用序列——那样测出来的是测试自己写的那条路，
+# 不是产品真走的那条。api 层不依赖 pyo3，开箱即可用。
+[dev-dependencies]
+psychdoc-ffi = { path = "../psychdoc-ffi" }
+psychdoc-model = { path = "../psychdoc-model" }

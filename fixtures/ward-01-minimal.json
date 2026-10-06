@@ -1,0 +1,47 @@
+{
+  "_comment": "脱敏合成夹具：1 份约束知情同意，2 个 section，其中「患方签字」必填字段缺失（QC-PSY-01）。不含任何真实患者标识。",
+  "resourceType": "Bundle",
+  "type": "collection",
+  "entry": [
+    {
+      "fullUrl": "urn:uuid:WARD-A-001-CONSENT-01",
+      "resource": {
+        "resourceType": "Composition",
+        "id": "WARD-A-001-CONSENT-01",
+        "status": "preliminary",
+        "title": "约束知情同意（脱敏样例）",
+        "date": "2026-03-02T08:30:00+08:00",
+        "identifier": [
+          {
+            "system": "https://example-hospital.invalid/fhir/identifier/encounter",
+            "value": "WARD-A-001"
+          }
+        ],
+        "type": {
+          "coding": [
+            {
+              "system": "https://example-hospital.invalid/fhir/CodeSystem/doc-type",
+              "code": "restraint_consent",
+              "display": "约束知情同意"
+            }
+          ]
+        },
+        "author": [
+          {
+            "reference": "Practitioner/example-nurse-a"
+          }
+        ],
+        "section": [
+          {
+            "title": "约束事由",
+            "text": "约束事由：夜间反复冲动，需短时保护。\n保护等级：二级保护。\n约束起止：由当班护士按医嘱执行。"
+          },
+          {
+            "title": "患方知情同意",
+            "text": "患方意见：已知情同意，同意按护理常规采取保护措施。\n约束起始时间：2026-03-02 08:30。\n执行护士：<EXAMPLE_NURSE>。\n患方签字："
+          }
+        ]
+      }
+    }
+  ]
+}

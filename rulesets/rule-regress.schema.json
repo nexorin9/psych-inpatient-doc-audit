@@ -1,0 +1,167 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example-hospital.invalid/psychdoc/schemas/rule-regress.schema.json",
+  "title": "精神科住院文书审查 · 规则回归用例集",
+  "description": "rulesets/rule-regress.yaml 的结构约束。一条用例钉三件事：given（脱敏夹具 + 可选切片）、expect（期望命中码 / 条数 / 位置，以及没报时的留痕）、kind（正例 / 反例 / 边界例）。加载器另加三条跨字段强校验（见 allOf 末段）：反例不得声明期望命中码、正例必须点名要命中的码、用例 id 不得重复——它们无法用 JSON Schema 表达，由 psychdoc-rules::regress::load_cases 负责。",
+  "type": "object",
+  "required": ["version", "cases"],
+  "additionalProperties": false,
+  "properties": {
+    "version": {
+      "description": "用例格式版本。改动 expect 语义时必须 +1，否则老用例文件会被新语义静默按另一套标准判过去。",
+      "const": "1.0"
+    },
+    "cases": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/case" }
+    }
+  },
+  "$defs": {
+    "case": {
+      "type": "object",
+      "required": ["id", "code", "kind", "given", "expect"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "description": "用例 id，全套件唯一。失败报告按它定位。",
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[a-z0-9][a-z0-9-]*$"
+        },
+        "code": {
+          "description": "本用例钉哪条规则码。覆盖矩阵按它统计；形状与院内 QC-PSY-nn 一致。",
+          "type": "string",
+          "pattern": "^QC-PSY-[0-9]{2}$"
+        },
+        "kind": {
+          "description": "positive = 该码必须命中；negative = 整包必须零命中（误报守卫）；boundary = 贴着判定线走，命中与否都要留痕。",
+          "enum": ["positive", "negative", "boundary"]
+        },
+        "note": {
+          "description": "人可读的一句话：这条例的是哪种现场。",
+          "type": "string"
+        },
+        "given": { "$ref": "#/$defs/given" },
+        "expect": { "$ref": "#/$defs/expect" }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "kind": { "const": "negative" } }, "required": ["kind"] },
+          "then": {
+            "properties": {
+              "expect": {
+                "description": "反例要求整包零命中，因此不得声明任何期望命中码。",
+                "not": { "required": ["codes"] }
+              }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "kind": { "const": "positive" } }, "required": ["kind"] },
+          "then": {
+            "properties": {
+              "expect": {
+                "required": ["codes"],
+                "properties": { "codes": { "minItems": 1 } }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "given": {
+      "type": "object",
+      "required": ["fixture"],
+      "additionalProperties": false,
+      "properties": {
+        "fixture": {
+          "description": "相对 --root 的脱敏夹具路径（FHIR R4 Bundle 导出文件）。不含真实患者标识。",
+          "type": "string",
+          "minLength": 1
+        },
+        "doc_ids": {
+          "description": "切片：只把列出的 Composition.id 送进规则层。留空 = 整包都进。件名写错会让这条用例悄悄跑成空转，因此集成测试会逐条核对。",
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "uniqueItems": true
+        }
+      }
+    },
+    "expect": {
+      "description": "期望。codes 是集合比对（顺序与重复不计）；要卡条数写 count。「没报」的正面写法是 skipped / tolerated / suppressed 三栏——判不出来、落在容差内、被去重折叠都不是「通过」，说不清为什么没报的用例等于没写。",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "codes": {
+          "description": "期望的命中码集合。",
+          "type": "array",
+          "items": { "type": "string", "pattern": "^QC-PSY-[0-9]{2}$" },
+          "uniqueItems": true
+        },
+        "count": {
+          "description": "期望的诊断总条数。同码两条与一条是不同的结论。",
+          "type": "integer",
+          "minimum": 0
+        },
+        "severity": {
+          "description": "期望的严重度分层。单列一栏是因为科室级把某条规则从阻断改成提示时命中码不变，只比对码会静悄悄放过这种改动。",
+          "enum": ["blocking", "notice"]
+        },
+        "locations": {
+          "description": "位置断言：把「报在哪」也钉死。只断言码等于只断言「报了个数」。",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["code", "doc_id", "section_index", "char_start", "char_end"],
+            "additionalProperties": false,
+            "properties": {
+              "code": { "type": "string", "pattern": "^QC-PSY-[0-9]{2}$" },
+              "doc_id": { "type": "string", "minLength": 1 },
+              "section_index": { "type": "integer", "minimum": 0 },
+              "char_start": { "type": "integer", "minimum": 0 },
+              "char_end": { "type": "integer", "minimum": 0 },
+              "message_contains": {
+                "description": "命中文案里必须出现的片段（如被点名的那一栏）。",
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        },
+        "skipped": {
+          "description": "「未判定」断言：判不出来（缺时刻 / 精度不足 / 绑定不唯一），不是通过。reason 省略时只比对规则码。",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["code"],
+            "additionalProperties": false,
+            "properties": {
+              "code": { "type": "string", "pattern": "^QC-PSY-[0-9]{2}$" },
+              "reason": { "type": "string", "minLength": 1 }
+            }
+          }
+        },
+        "tolerated": {
+          "description": "「容差内未判违规」断言：判出来了，结论是落在并列容差内不算违规。",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["code", "tolerance_minutes"],
+            "additionalProperties": false,
+            "properties": {
+              "code": { "type": "string", "pattern": "^QC-PSY-[0-9]{2}$" },
+              "tolerance_minutes": { "enum": [0, 1, 5] }
+            }
+          }
+        },
+        "suppressed": {
+          "description": "被去重层折叠掉的码（更具体的码赢了，同处只刷一行，不是丢掉了）。",
+          "type": "array",
+          "items": { "type": "string", "pattern": "^QC-PSY-[0-9]{2}$" },
+          "uniqueItems": true
+        }
+      }
+    }
+  }
+}

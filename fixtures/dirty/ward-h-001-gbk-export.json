@@ -1,0 +1,47 @@
+{
+  "_comment": "脱敏合成夹具：整份以 GBK 编码导出。read_to_string 在这份包上会直接报错，解析器必须先嗅探编码；内容应与 UTF-8 版逐字相同。",
+  "resourceType": "Bundle",
+  "type": "collection",
+  "entry": [
+    {
+      "fullUrl": "urn:uuid:WARD-H-001-CONSENT-01",
+      "resource": {
+        "resourceType": "Composition",
+        "id": "WARD-H-001-CONSENT-01",
+        "status": "preliminary",
+        "title": "<脱敏样例文书>",
+        "identifier": [
+          {
+            "system": "https://his.example-hospital.invalid/fhir/identifier/encounter",
+            "value": "WARD-H-001"
+          }
+        ],
+        "type": {
+          "coding": [
+            {
+              "system": "https://example-hospital.invalid/fhir/CodeSystem/doc-type",
+              "code": "restraint_consent"
+            }
+          ]
+        },
+        "author": [
+          {
+            "reference": "Practitioner/<EXAMPLE_PRACTITIONER>"
+          }
+        ],
+        "date": "2026-03-02T08:30:00+08:00",
+        "authoredOn": "2026-03-02T08:55:00+08:00",
+        "section": [
+          {
+            "title": "约束事由",
+            "text": "约束事由：日间激越，需短时保护。"
+          },
+          {
+            "title": "患方知情同意",
+            "text": "患方意见：已知情同意，同意按护理常规采取保护措施。\n患方签字：\n约束起始时间：2026-03-02 23:40。"
+          }
+        ]
+      }
+    }
+  ]
+}

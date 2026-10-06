@@ -1,0 +1,27 @@
+[package]
+name = "psychdoc-parse"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+serde = { workspace = true }
+serde_json = { workspace = true }
+serde_yaml = { workspace = true }
+thiserror = { workspace = true }
+chrono = { workspace = true }
+regex = { workspace = true }
+psychdoc-model = { path = "../psychdoc-model" }
+encoding_rs = "0.8"
+# 峰值内存探针：getrusage(RUSAGE_SELF).ru_maxrss。只在 profile.rs 用一处，
+# 但它换来的是**进程级峰值 RSS** 这个操作系统视角的真读数；自己估算
+# 对象大小会漏掉分配器碎片与 serde 临时缓冲——而那正是大包解析先炸的地方。
+libc = "0.2"
+
+[dev-dependencies]
+psychdoc-rules = { path = "../psychdoc-rules" }
+# 规模基准要跑完整主路径：解析 → 求值 → 建图与阻塞传播 → 写库。
+# 后两段只有这两个 crate 有，因此它们是**基准**的依赖，不是产品的。
+psychdoc-graph = { path = "../psychdoc-graph" }
+psychdoc-store = { path = "../psychdoc-store" }
+tempfile = "3.27.0"

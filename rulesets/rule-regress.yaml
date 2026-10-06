@@ -1,0 +1,344 @@
+# 规则回归用例集 · 精神科住院文书审查
+#
+# 用途：规则集改一行（改一条 basis、挪一个 applies_to、动一个并列容差档位），
+# 跑 `psychdoc rule-regress` 秒级知道打破了几条用例、打破了哪条。
+#
+# 一条用例钉三件事：
+#   given.fixture  一份脱敏夹具（不含真实患者标识）
+#   given.doc_ids  可选切片：只把列出的几件送进规则层
+#   expect         期望命中码集合 / 条数 / 位置，以及**没报时的留痕**
+#
+# 三类用例缺一不可：
+#   positive  该码必须命中 —— 漏了会有人来问
+#   negative  整包必须零命中 —— 误报比漏报更隐蔽：漏报护士长会来问，
+#             误报只会让人觉得「这工具老乱报」，然后不再用它
+#   boundary  贴着判定线走 —— 命中与否都要**留痕**（未判定 / 容差内 / 被折叠）。
+#             「没报」在这里不是「通过」，说不清为什么没报的用例等于没写。
+#
+# expect.codes 是**集合**比对（顺序与重复不计）；要卡条数就写 expect.count。
+# expect.skipped / tolerated / suppressed 三栏是「没报」的正面写法：
+#   skipped     —— 判不出来（缺时刻 / 精度不足 / 绑定不唯一），不是通过
+#   tolerated   —— 判出来了，结论是落在并列容差内不算违规
+#   suppressed  —— 被更具体的码折叠（同处只刷一行，不是丢掉了）
+#
+# 维护：本文件由质控办与信息科共同维护。新增规则码时**必须**同时补齐
+# 三类用例，否则覆盖矩阵会显示缺位、`rule-regress` 直接非 0 退出。
+
+version: "1.0"
+cases:
+  # ================= QC-PSY-01 件内必填字段缺失 =================
+  - id: psy-01-positive-signature-blank
+    code: QC-PSY-01
+    kind: positive
+    note: 约束知情同意的「患方签字」键在但值为空 —— 护士长把这一栏补上即可解除阻断
+    given:
+      fixture: fixtures/ward-01-minimal.json
+    expect:
+      severity: blocking
+      codes: [QC-PSY-01]
+      count: 1
+      locations:
+        - code: QC-PSY-01
+          doc_id: WARD-A-001-CONSENT-01
+          section_index: 1
+          char_start: 78
+          char_end: 78
+          message_contains: 患方签字
+          # 必须是「有键无值」而不是「压根没这一栏」——
+          # 两种情形的整改话术不同，护士长照着改才不会改错地方。
+
+  - id: psy-01-negative-compliant-package
+    code: QC-PSY-01
+    kind: negative
+    note: 同场景全合规包必须零命中
+    given:
+      fixture: fixtures/ward-09-field-compliant.json
+    expect:
+      count: 0
+
+  - id: psy-01-boundary-mixed-entries
+    code: QC-PSY-01
+    kind: boundary
+    note: 包里混了字典外类型、附件、Provenance、无住院别名的件 —— 只有真正的约束知情同意报，其余走解析期问题，不许混进规则命中
+    given:
+      fixture: fixtures/ward-05-mixed-entries.json
+    expect:
+      codes: [QC-PSY-01]
+      count: 1
+
+  # ================= QC-PSY-02 字段值形状不符 =================
+  - id: psy-02-positive-fullwidth-date
+    code: QC-PSY-02
+    kind: positive
+    note: 评估时间写成全角数字 —— 全角归一是唯一给补写载荷的情形，护士长点一下预览即可
+    given:
+      fixture: fixtures/ward-08-field-violations.json
+      doc_ids: [WARD-F-001-ASSESS-01]
+    expect:
+      severity: blocking
+      codes: [QC-PSY-02]
+      count: 1
+      locations:
+        - code: QC-PSY-02
+          doc_id: WARD-F-001-ASSESS-01
+          section_index: 0
+          char_start: 5
+          char_end: 22
+          message_contains: 评估时间
+
+  - id: psy-02-negative-compliant-date
+    code: QC-PSY-02
+    kind: negative
+    note: 合规评估件零命中
+    given:
+      fixture: fixtures/ward-09-field-compliant.json
+      doc_ids: [WARD-G-001-ASSESS-01]
+    expect:
+      count: 0
+
+  - id: psy-02-boundary-value-with-sentence-punct
+    code: QC-PSY-02
+    kind: boundary
+    note: 约束记录里的日期与时长都带句号 —— 句号是病区随手写的标点，不是格式错；只有等级越界与单位错配两条真命中
+    given:
+      fixture: fixtures/ward-08-field-violations.json
+      doc_ids: [WARD-F-001-RECORD-01]
+    expect:
+      codes: [QC-PSY-03, QC-PSY-04]
+      count: 2
+
+  # ================= QC-PSY-03 取值域越界 =================
+  - id: psy-03-positive-level-out-of-domain
+    code: QC-PSY-03
+    kind: positive
+    note: 约束等级填「四级保护」—— 院内表单只有一/二/三级保护三级勾选项
+    given:
+      fixture: fixtures/ward-08-field-violations.json
+      doc_ids: [WARD-F-001-RECORD-01]
+    expect:
+      severity: blocking
+      codes: [QC-PSY-03, QC-PSY-04]
+      count: 2
+      locations:
+        - code: QC-PSY-03
+          doc_id: WARD-F-001-RECORD-01
+          section_index: 0
+          char_start: 30
+          char_end: 35
+          message_contains: 四级保护
+
+  - id: psy-03-negative-compliant-record
+    code: QC-PSY-03
+    kind: negative
+    note: 二级保护 + 120 分钟的合规记录零命中
+    given:
+      fixture: fixtures/ward-09-field-compliant.json
+      doc_ids: [WARD-G-001-RECORD-01]
+    expect:
+      count: 0
+
+  - id: psy-03-boundary-folded-by-more-specific
+    code: QC-PSY-03
+    kind: boundary
+    note: 「1000 小时」同时命中越界与单位错配 —— 去重后只刷更具体的 04，03 折叠留痕而不是消失
+    given:
+      fixture: fixtures/ward-15-overlapping-findings.json
+    expect:
+      codes: [QC-PSY-04]
+      count: 1
+      suppressed: [QC-PSY-03]
+
+  # ================= QC-PSY-04 单位 / 量纲错配 =================
+  - id: psy-04-positive-wrong-unit
+    code: QC-PSY-04
+    kind: positive
+    note: 约束时长按表单标注以分钟计量，填「1000 小时」无法核算
+    given:
+      fixture: fixtures/ward-15-overlapping-findings.json
+    expect:
+      severity: blocking
+      codes: [QC-PSY-04]
+      count: 1
+      locations:
+        - code: QC-PSY-04
+          doc_id: WARD-J-001-RECORD-01
+          section_index: 0
+          char_start: 80
+          char_end: 88
+          message_contains: 分钟
+
+  - id: psy-04-negative-correct-unit
+    code: QC-PSY-04
+    kind: negative
+    note: 合规记录「120 分钟」零命中
+    given:
+      fixture: fixtures/ward-09-field-compliant.json
+      doc_ids: [WARD-G-001-RECORD-01]
+    expect:
+      count: 0
+
+  - id: psy-04-boundary-converted-value-in-range
+    code: QC-PSY-04
+    kind: boundary
+    note: 「2 小时」换算后 120 分钟落在允许区间内 —— 只报单位错配，不连带报越界
+    given:
+      fixture: fixtures/ward-08-field-violations.json
+      doc_ids: [WARD-F-001-RECORD-01]
+    expect:
+      codes: [QC-PSY-03, QC-PSY-04]
+      count: 2
+      locations:
+        - code: QC-PSY-04
+          doc_id: WARD-F-001-RECORD-01
+          section_index: 0
+          char_start: 63
+          char_end: 68
+
+  # ================= QC-PSY-05 事件与记录时序倒挂 =================
+  - id: psy-05-positive-release-before-start
+    code: QC-PSY-05
+    kind: positive
+    note: 解除时间 07:00 早于约束起始 08:00 —— 违反的两件各报一条，护士长看得出是谁先谁后
+    given:
+      fixture: fixtures/ward-11-cross-doc-violations.json
+      doc_ids: [WARD-I-001-RECORD-01, WARD-I-001-RELEASE-01]
+    expect:
+      severity: blocking
+      codes: [QC-PSY-05]
+      count: 2
+
+  - id: psy-05-negative-correct-order
+    code: QC-PSY-05
+    kind: negative
+    note: 解除 13:10 晚于起始 08:00 的合规包零命中
+    given:
+      fixture: fixtures/ward-12-cross-doc-compliant.json
+    expect:
+      count: 0
+
+  - id: psy-05-boundary-inside-tie-tolerance
+    code: QC-PSY-05
+    kind: boundary
+    note: 解除早 3 分钟但落在院内声明的 5 分钟并列容差内 —— 判出来了，结论是不算违规，且必须留痕
+    given:
+      fixture: fixtures/ward-13-tie-tolerance.json
+      doc_ids: [WARD-N-001-RECORD-01, WARD-N-001-RELEASE-01]
+    expect:
+      count: 0
+      tolerated:
+        - code: QC-PSY-05
+          tolerance_minutes: 5
+
+  # ================= QC-PSY-06 评估与约束时序矛盾 =================
+  - id: psy-06-positive-assessment-after-restraint
+    code: QC-PSY-06
+    kind: positive
+    note: 首次约束 03-04 08:00 才开始，评估却写在 03-05 10:00 —— 补记说明才放得过
+    given:
+      fixture: fixtures/ward-11-cross-doc-violations.json
+      doc_ids: [WARD-I-001-ASSESS-01, WARD-I-001-RECORD-01]
+    expect:
+      severity: blocking
+      codes: [QC-PSY-06]
+      count: 2
+
+  - id: psy-06-negative-assessment-first
+    code: QC-PSY-06
+    kind: negative
+    note: 评估早于首次约束的合规包零命中
+    given:
+      fixture: fixtures/ward-12-cross-doc-compliant.json
+    expect:
+      count: 0
+
+  - id: psy-06-boundary-moment-unreadable
+    code: QC-PSY-06
+    kind: boundary
+    note: 评估时间写成全角抽不出时刻 —— 判不出来，不拿当前时间兜底，记未判定交人工
+    given:
+      fixture: fixtures/ward-08-field-violations.json
+      doc_ids: [WARD-F-001-ASSESS-01, WARD-F-001-RECORD-01]
+    expect:
+      # 评估件自身还有一条全角日期（QC-PSY-02）——切片里带着它就一起报，
+      # 不为了「让这条用例只关心 06」而把它藏起来。
+      codes: [QC-PSY-02, QC-PSY-03, QC-PSY-04]
+      count: 3
+      skipped:
+        - code: QC-PSY-06
+          reason: 有一侧抽不出时刻
+
+  # ================= QC-PSY-07 约束与签署时序错误 =================
+  - id: psy-07-positive-signature-after-restraint
+    code: QC-PSY-07
+    kind: positive
+    note: 患方签署时刻 07:40 晚于约束起始 08:00 —— 按先约束后知情处理
+    given:
+      fixture: fixtures/ward-11-cross-doc-violations.json
+      doc_ids: [WARD-I-001-CONSENT-01, WARD-I-001-RECORD-01]
+    expect:
+      severity: blocking
+      codes: [QC-PSY-07]
+      count: 2
+
+  - id: psy-07-negative-consent-first
+    code: QC-PSY-07
+    kind: negative
+    note: 知情同意先于约束开始的合规包零命中
+    given:
+      fixture: fixtures/ward-12-cross-doc-compliant.json
+    expect:
+      count: 0
+
+  - id: psy-07-boundary-precision-too-coarse
+    code: QC-PSY-07
+    kind: boundary
+    note: 签署时刻只写到日 —— 判了就是在猜，记「精度不足」交人工而不是静悄悄放过
+    given:
+      fixture: fixtures/ward-14-coarse-precision.json
+      doc_ids: [WARD-P-001-CONSENT-01, WARD-P-001-RECORD-01]
+    expect:
+      count: 0
+      skipped:
+        - code: QC-PSY-07
+          reason: 时刻精度不足以分辨先后
+
+  # ================= QC-PSY-08 签署齐备性 =================
+  - id: psy-08-positive-signed-without-moment
+    code: QC-PSY-08
+    kind: positive
+    note: 签署页两个签字都在，但该件没有 authoredOn —— 事后无法核对签署与约束的先后
+    given:
+      fixture: fixtures/ward-11-cross-doc-violations.json
+      doc_ids: [WARD-I-001-SIGN-01]
+    expect:
+      severity: blocking
+      codes: [QC-PSY-08]
+      count: 1
+      locations:
+        - code: QC-PSY-08
+          doc_id: WARD-I-001-SIGN-01
+          section_index: 0
+          char_start: 29
+          char_end: 45
+          message_contains: 签署时刻
+
+  - id: psy-08-negative-signed-with-moment
+    code: QC-PSY-08
+    kind: negative
+    note: 签署页带 authoredOn 的合规件零命中
+    given:
+      fixture: fixtures/ward-12-cross-doc-compliant.json
+      doc_ids: [WARD-J-001-SIGN-01]
+    expect:
+      count: 0
+
+  - id: psy-08-boundary-half-signed-page
+    code: QC-PSY-08
+    kind: boundary
+    note: 护士签字写了、医师签字压根没写，且全件无 authoredOn —— 两条不同的码各管各的，不许混成一条
+    given:
+      fixture: fixtures/ward-04-missing-moments.json
+      doc_ids: [WARD-D-001-SIGN-01]
+    expect:
+      codes: [QC-PSY-01, QC-PSY-08]
+      count: 2

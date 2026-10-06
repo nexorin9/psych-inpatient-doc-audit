@@ -1,0 +1,40 @@
+[package]
+name = "psychdoc-ffi"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[lib]
+name = "psychdoc_ffi"
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+serde = { workspace = true }
+serde_json = { workspace = true }
+serde_yaml = { workspace = true }
+sha2 = { workspace = true }
+chrono = { workspace = true }
+anyhow = { workspace = true }
+thiserror = { workspace = true }
+psychdoc-model = { path = "../psychdoc-model" }
+psychdoc-parse = { path = "../psychdoc-parse" }
+psychdoc-rules = { path = "../psychdoc-rules" }
+psychdoc-graph = { path = "../psychdoc-graph" }
+psychdoc-fhir = { path = "../psychdoc-fhir" }
+psychdoc-store = { path = "../psychdoc-store" }
+
+[dependencies.pyo3]
+version = "0.22"
+features = ["extension-module"]
+optional = true
+
+[build-dependencies.pyo3-build-config]
+version = "0.22"
+optional = true
+
+[features]
+default = []
+extension-module = ["dep:pyo3", "dep:pyo3-build-config"]
+
+[dev-dependencies]
+serde_json = { workspace = true }

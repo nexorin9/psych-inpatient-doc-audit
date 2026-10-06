@@ -1,0 +1,281 @@
+{
+  "_comment": "脱敏合成夹具（psychdoc-fixture-kit 1.0.0 生成）：WARD-P-005，7 件，注入违规 无。同场景全合规：任何规则都不得命中（误报守卫）。",
+  "_fixture_meta": {
+    "generator": "psychdoc-fixture-kit",
+    "generator_version": "1.0.0",
+    "encounter_alias": "WARD-P-005",
+    "ward": "WARD",
+    "defects": [],
+    "note": "同场景全合规：任何规则都不得命中（误报守卫）。",
+    "doc_types": [
+      "assessment_report",
+      "inpatient_record",
+      "nursing_record",
+      "restraint_consent",
+      "restraint_record",
+      "restraint_release",
+      "sign_page"
+    ],
+    "expectation_zh": {}
+  },
+  "resourceType": "Bundle",
+  "type": "collection",
+  "entry": [
+    {
+      "fullUrl": "urn:uuid:WARD-P-005-INPATIENT-01",
+      "resource": {
+        "resourceType": "Composition",
+        "id": "WARD-P-005-INPATIENT-01",
+        "status": "preliminary",
+        "title": "<脱敏样例文书·住院记录>",
+        "identifier": [
+          {
+            "system": "https://his.example-hospital.invalid/fhir/identifier/encounter",
+            "value": "WARD-P-005"
+          }
+        ],
+        "type": {
+          "coding": [
+            {
+              "system": "https://example-hospital.invalid/fhir/CodeSystem/doc-type",
+              "code": "inpatient_record"
+            }
+          ]
+        },
+        "author": [
+          {
+            "reference": "Practitioner/<EXAMPLE_PRACTITIONER>"
+          }
+        ],
+        "date": "2026-03-04T09:00:00+08:00",
+        "authoredOn": "2026-03-04T09:20:00+08:00",
+        "section": [
+          {
+            "title": "入院记录",
+            "text": "入院时间：2026-03-04 09:00。\n诊断：精神分裂症缓解期伴冲动风险。"
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:WARD-P-005-ASSESS-01",
+      "resource": {
+        "resourceType": "Composition",
+        "id": "WARD-P-005-ASSESS-01",
+        "status": "preliminary",
+        "title": "<脱敏样例文书·评估报告>",
+        "identifier": [
+          {
+            "system": "https://his.example-hospital.invalid/fhir/identifier/encounter",
+            "value": "WARD-P-005"
+          }
+        ],
+        "type": {
+          "coding": [
+            {
+              "system": "https://example-hospital.invalid/fhir/CodeSystem/doc-type",
+              "code": "assessment_report"
+            }
+          ]
+        },
+        "author": [
+          {
+            "reference": "Practitioner/<EXAMPLE_PRACTITIONER>"
+          }
+        ],
+        "date": "2026-03-04T09:30:00+08:00",
+        "authoredOn": "2026-03-04T09:50:00+08:00",
+        "section": [
+          {
+            "title": "入院评估",
+            "text": "评估时间：2026-03-04 09:30。\n风险等级：中高风险。\n评估医师：<EXAMPLE_PRACTITIONER>。"
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:WARD-P-005-CONSENT-01",
+      "resource": {
+        "resourceType": "Composition",
+        "id": "WARD-P-005-CONSENT-01",
+        "status": "preliminary",
+        "title": "<脱敏样例文书·约束知情同意>",
+        "identifier": [
+          {
+            "system": "https://his.example-hospital.invalid/fhir/identifier/encounter",
+            "value": "WARD-P-005"
+          }
+        ],
+        "type": {
+          "coding": [
+            {
+              "system": "https://example-hospital.invalid/fhir/CodeSystem/doc-type",
+              "code": "restraint_consent"
+            }
+          ]
+        },
+        "author": [
+          {
+            "reference": "Practitioner/<EXAMPLE_PRACTITIONER>"
+          }
+        ],
+        "date": "2026-03-04T09:35:00+08:00",
+        "authoredOn": "2026-03-04T09:40:00+08:00",
+        "section": [
+          {
+            "title": "约束事由",
+            "text": "约束事由：日间反复冲动，需短时保护。。"
+          },
+          {
+            "title": "患方知情同意",
+            "text": "患方意见：已知情同意，同意按护理常规采取保护措施。。\n约束起始时间：2026-03-04 10:00。\n患方签字：<EXAMPLE_SIGNATURE>。"
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:WARD-P-005-RECORD-01",
+      "resource": {
+        "resourceType": "Composition",
+        "id": "WARD-P-005-RECORD-01",
+        "status": "preliminary",
+        "title": "<脱敏样例文书·约束记录>",
+        "identifier": [
+          {
+            "system": "https://his.example-hospital.invalid/fhir/identifier/encounter",
+            "value": "WARD-P-005"
+          }
+        ],
+        "type": {
+          "coding": [
+            {
+              "system": "https://example-hospital.invalid/fhir/CodeSystem/doc-type",
+              "code": "restraint_record"
+            }
+          ]
+        },
+        "author": [
+          {
+            "reference": "Practitioner/<EXAMPLE_PRACTITIONER>"
+          }
+        ],
+        "date": "2026-03-04T10:00:00+08:00",
+        "authoredOn": "2026-03-04T10:20:00+08:00",
+        "section": [
+          {
+            "title": "约束经过",
+            "text": "约束起始时间：2026-03-04 10:00。\n约束等级：二级保护。\n执行护士：<EXAMPLE_NURSE>。\n观察记录：约束期间生命体征平稳。。\n约束时长：120 分钟。"
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:WARD-P-005-RELEASE-01",
+      "resource": {
+        "resourceType": "Composition",
+        "id": "WARD-P-005-RELEASE-01",
+        "status": "preliminary",
+        "title": "<脱敏样例文书·约束解除记录>",
+        "identifier": [
+          {
+            "system": "https://his.example-hospital.invalid/fhir/identifier/encounter",
+            "value": "WARD-P-005"
+          }
+        ],
+        "type": {
+          "coding": [
+            {
+              "system": "https://example-hospital.invalid/fhir/CodeSystem/doc-type",
+              "code": "restraint_release"
+            }
+          ]
+        },
+        "author": [
+          {
+            "reference": "Practitioner/<EXAMPLE_PRACTITIONER>"
+          }
+        ],
+        "date": "2026-03-04T11:30:00+08:00",
+        "authoredOn": "2026-03-04T11:40:00+08:00",
+        "section": [
+          {
+            "title": "解除经过",
+            "text": "解除时间：2026-03-04 11:30。\n解除依据：症状缓解，经护士长查房同意解除。。\n执行护士：<EXAMPLE_NURSE>。"
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:WARD-P-005-SIGN-01",
+      "resource": {
+        "resourceType": "Composition",
+        "id": "WARD-P-005-SIGN-01",
+        "status": "preliminary",
+        "title": "<脱敏样例文书·签署页>",
+        "identifier": [
+          {
+            "system": "https://his.example-hospital.invalid/fhir/identifier/encounter",
+            "value": "WARD-P-005"
+          }
+        ],
+        "type": {
+          "coding": [
+            {
+              "system": "https://example-hospital.invalid/fhir/CodeSystem/doc-type",
+              "code": "sign_page"
+            }
+          ]
+        },
+        "author": [
+          {
+            "reference": "Practitioner/<EXAMPLE_PRACTITIONER>"
+          }
+        ],
+        "date": "2026-03-04T11:40:00+08:00",
+        "authoredOn": "2026-03-04T11:45:00+08:00",
+        "section": [
+          {
+            "title": "签署页",
+            "text": "护士签字：<EXAMPLE_SIGNATURE>。\n医师签字：<EXAMPLE_SIGNATURE>。"
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:WARD-P-005-NURSING-01",
+      "resource": {
+        "resourceType": "Composition",
+        "id": "WARD-P-005-NURSING-01",
+        "status": "preliminary",
+        "title": "<脱敏样例文书·护理记录>",
+        "identifier": [
+          {
+            "system": "https://his.example-hospital.invalid/fhir/identifier/encounter",
+            "value": "WARD-P-005"
+          }
+        ],
+        "type": {
+          "coding": [
+            {
+              "system": "https://example-hospital.invalid/fhir/CodeSystem/doc-type",
+              "code": "nursing_record"
+            }
+          ]
+        },
+        "author": [
+          {
+            "reference": "Practitioner/<EXAMPLE_PRACTITIONER>"
+          }
+        ],
+        "date": "2026-03-04T10:30:00+08:00",
+        "authoredOn": "2026-03-04T10:50:00+08:00",
+        "section": [
+          {
+            "title": "护理记录",
+            "text": "巡视时间：2026-03-04 10:30。\n病情描述：情绪较入院时平稳，夜间未再激越。。"
+          }
+        ]
+      }
+    }
+  ]
+}

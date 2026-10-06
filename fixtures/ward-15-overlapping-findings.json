@@ -1,0 +1,83 @@
+{
+  "_comment": "脱敏合成夹具：同一处触发多条规则的**真实重叠**场景。约束时长填「1000 小时」会同时命中 QC-PSY-03（取值域越界，1000 > 720）与 QC-PSY-04（单位错配，应填分钟），两条定位到同一件同一段同一字符区间。整改动作只有一个：把这一栏改成规范写法。全部标识均为脱敏别名，不含任何真实患者身份串或真实科室名。",
+  "resourceType": "Bundle",
+  "type": "collection",
+  "entry": [
+    {
+      "fullUrl": "urn:uuid:WARD-J-001-RECORD-01",
+      "resource": {
+        "resourceType": "Composition",
+        "id": "WARD-J-001-RECORD-01",
+        "status": "preliminary",
+        "title": "<脱敏样例文书>",
+        "date": "2026-03-08T09:00:00+08:00",
+        "authoredOn": "2026-03-08T09:40:00+08:00",
+        "identifier": [
+          {
+            "system": "https://his.example-hospital.invalid/fhir/identifier/encounter",
+            "value": "WARD-J-001"
+          }
+        ],
+        "type": {
+          "coding": [
+            {
+              "system": "https://example-hospital.invalid/fhir/CodeSystem/doc-type",
+              "code": "restraint_record"
+            }
+          ]
+        },
+        "author": [
+          {
+            "reference": "Practitioner/<EXAMPLE_PRACTITIONER>"
+          }
+        ],
+        "section": [
+          {
+            "title": "约束经过",
+            "text": "约束起始时间：2026-03-08 09:00。\n约束等级：一级保护。\n执行护士：<EXAMPLE_NURSE>。\n观察记录：约束期间生命体征平稳。\n约束时长：1000 小时。"
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:WARD-J-001-CONSENT-01",
+      "resource": {
+        "resourceType": "Composition",
+        "id": "WARD-J-001-CONSENT-01",
+        "status": "preliminary",
+        "title": "<脱敏样例文书>",
+        "date": "2026-03-08T08:30:00+08:00",
+        "authoredOn": "2026-03-08T08:52:00+08:00",
+        "identifier": [
+          {
+            "system": "https://his.example-hospital.invalid/fhir/identifier/encounter",
+            "value": "WARD-J-001"
+          }
+        ],
+        "type": {
+          "coding": [
+            {
+              "system": "https://example-hospital.invalid/fhir/CodeSystem/doc-type",
+              "code": "restraint_consent"
+            }
+          ]
+        },
+        "author": [
+          {
+            "reference": "Practitioner/<EXAMPLE_PRACTITIONER>"
+          }
+        ],
+        "section": [
+          {
+            "title": "约束事由",
+            "text": "约束事由：夜间反复冲动，需短时保护。"
+          },
+          {
+            "title": "患方知情同意",
+            "text": "患方意见：已知情同意，同意按护理常规采取保护措施。\n约束起始时间：2026-03-08 09:00。\n执行护士：<EXAMPLE_NURSE>。\n患方签字：<EXAMPLE_SIGNATURE>。"
+          }
+        ]
+      }
+    }
+  ]
+}

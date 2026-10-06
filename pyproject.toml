@@ -1,0 +1,34 @@
+[build-system]
+requires = ["maturin>=1.4,<2.0"]
+build-backend = "maturin"
+
+[project]
+name = "psychdoc-desktop"
+version = "0.1.0"
+description = "精神科住院文书审查系统 —— 桌面壳（PySide6）"
+# 与 run.sh 的启动自检、README「依赖」表保持同一档下限：三者写成不同版本号时，
+# 「按 README 装完却 pip install 不进去」是最容易被忽略的一条。
+requires-python = ">=3.10"
+dependencies = [
+    "PySide6>=6.6,<7.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+]
+
+[project.scripts]
+psychdoc-desktop = "desktop.main:main"
+psychdoc-selfcheck = "desktop.main:preflight"
+
+[tool.maturin]
+python-source = "."
+module-name = "psychdoc_ffi"
+manifest-path = "core/crates/psychdoc-ffi/Cargo.toml"
+features = ["pyo3/extension-module"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+# GUI 用例一律跑 offscreen：见根目录 conftest.py（那里也设了兜底）

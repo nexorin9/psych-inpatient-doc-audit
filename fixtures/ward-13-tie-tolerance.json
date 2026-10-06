@@ -1,0 +1,190 @@
+{
+  "_comment": "脱敏合成夹具：同班次补记场景。解除时间比约束起始时间早 3 分钟——纸面上是倒挂，但落在院内 5 分钟并列容差内。配套 ward-11（真实倒挂 60 分钟）做对照：改容差时 ward-11 的结论必须一字不变。签署页已填两个签名但无 authoredOn，用于守住「其余诊断不随容差变化」。",
+  "resourceType": "Bundle",
+  "type": "collection",
+  "entry": [
+    {
+      "fullUrl": "urn:uuid:WARD-N-001-CONSENT-01",
+      "resource": {
+        "resourceType": "Composition",
+        "id": "WARD-N-001-CONSENT-01",
+        "status": "preliminary",
+        "title": "<脱敏样例文书>",
+        "identifier": [
+          {
+            "system": "https://his.example-hospital.invalid/fhir/identifier/encounter",
+            "value": "WARD-N-001"
+          }
+        ],
+        "date": "2026-03-11T07:40:00+08:00",
+        "type": {
+          "coding": [
+            {
+              "system": "https://example-hospital.invalid/fhir/CodeSystem/doc-type",
+              "code": "restraint_consent"
+            }
+          ]
+        },
+        "author": [
+          {
+            "reference": "Practitioner/<EXAMPLE_PRACTITIONER>"
+          }
+        ],
+        "section": [
+          {
+            "title": "约束事由",
+            "text": "约束事由：夜间反复冲动，需短时保护。\n保护等级：二级保护。"
+          },
+          {
+            "title": "患方知情同意",
+            "text": "患方意见：已知情同意，同意按护理常规采取保护措施。\n约束起始时间：2026-03-11 08:00。\n执行护士：<EXAMPLE_NURSE>。\n患方签字：<EXAMPLE_SIGNATURE>。"
+          }
+        ],
+        "authoredOn": "2026-03-11T07:50:00+08:00"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:WARD-N-001-RECORD-01",
+      "resource": {
+        "resourceType": "Composition",
+        "id": "WARD-N-001-RECORD-01",
+        "status": "preliminary",
+        "title": "<脱敏样例文书>",
+        "identifier": [
+          {
+            "system": "https://his.example-hospital.invalid/fhir/identifier/encounter",
+            "value": "WARD-N-001"
+          }
+        ],
+        "date": "2026-03-11T08:00:00+08:00",
+        "type": {
+          "coding": [
+            {
+              "system": "https://example-hospital.invalid/fhir/CodeSystem/doc-type",
+              "code": "restraint_record"
+            }
+          ]
+        },
+        "author": [
+          {
+            "reference": "Practitioner/<EXAMPLE_PRACTITIONER>"
+          }
+        ],
+        "section": [
+          {
+            "title": "约束经过",
+            "text": "约束起始时间：2026-03-11 08:00。\n约束等级：二级保护。\n执行护士：<EXAMPLE_NURSE>。\n观察记录：约束期间生命体征平稳。\n约束时长：120 分钟。"
+          }
+        ],
+        "authoredOn": "2026-03-11T08:20:00+08:00"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:WARD-N-001-RELEASE-01",
+      "resource": {
+        "resourceType": "Composition",
+        "id": "WARD-N-001-RELEASE-01",
+        "status": "preliminary",
+        "title": "<脱敏样例文书>",
+        "identifier": [
+          {
+            "system": "https://his.example-hospital.invalid/fhir/identifier/encounter",
+            "value": "WARD-N-001"
+          }
+        ],
+        "date": "2026-03-11T07:57:00+08:00",
+        "type": {
+          "coding": [
+            {
+              "system": "https://example-hospital.invalid/fhir/CodeSystem/doc-type",
+              "code": "restraint_release"
+            }
+          ]
+        },
+        "author": [
+          {
+            "reference": "Practitioner/<EXAMPLE_PRACTITIONER>"
+          }
+        ],
+        "section": [
+          {
+            "title": "解除经过",
+            "text": "解除时间：2026-03-11 07:57。\n解除依据：症状缓解。\n执行护士：<EXAMPLE_NURSE>。"
+          }
+        ],
+        "authoredOn": "2026-03-11T08:05:00+08:00"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:WARD-N-001-ASSESS-01",
+      "resource": {
+        "resourceType": "Composition",
+        "id": "WARD-N-001-ASSESS-01",
+        "status": "preliminary",
+        "title": "<脱敏样例文书>",
+        "identifier": [
+          {
+            "system": "https://his.example-hospital.invalid/fhir/identifier/encounter",
+            "value": "WARD-N-001"
+          }
+        ],
+        "date": "2026-03-11T07:00:00+08:00",
+        "type": {
+          "coding": [
+            {
+              "system": "https://example-hospital.invalid/fhir/CodeSystem/doc-type",
+              "code": "assessment_report"
+            }
+          ]
+        },
+        "author": [
+          {
+            "reference": "Practitioner/<EXAMPLE_PRACTITIONER>"
+          }
+        ],
+        "section": [
+          {
+            "title": "入院评估",
+            "text": "评估时间：2026-03-11 07:00。\n风险等级：中高风险。\n评估医师：<EXAMPLE_PRACTITIONER>。"
+          }
+        ],
+        "authoredOn": "2026-03-11T07:20:00+08:00"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:WARD-N-001-SIGN-01",
+      "resource": {
+        "resourceType": "Composition",
+        "id": "WARD-N-001-SIGN-01",
+        "status": "preliminary",
+        "title": "<脱敏样例文书>",
+        "identifier": [
+          {
+            "system": "https://his.example-hospital.invalid/fhir/identifier/encounter",
+            "value": "WARD-N-001"
+          }
+        ],
+        "date": "2026-03-11T08:30:00+08:00",
+        "type": {
+          "coding": [
+            {
+              "system": "https://example-hospital.invalid/fhir/CodeSystem/doc-type",
+              "code": "sign_page"
+            }
+          ]
+        },
+        "author": [
+          {
+            "reference": "Practitioner/<EXAMPLE_PRACTITIONER>"
+          }
+        ],
+        "section": [
+          {
+            "title": "签署页",
+            "text": "签署页说明：本页由当班护士与值班医师共同签署。\n护士签字：<EXAMPLE_NURSE>。\n医师签字：<EXAMPLE_PRACTITIONER>。"
+          }
+        ]
+      }
+    }
+  ]
+}

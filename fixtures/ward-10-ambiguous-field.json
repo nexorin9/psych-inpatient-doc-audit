@@ -1,0 +1,47 @@
+{
+  "_comment": "脱敏合成夹具：同一件内「观察记录」（模板未声明段落）出现在两个段落 → 字段归属歧义，执行器不判定但必须记账。不含任何真实患者标识。",
+  "resourceType": "Bundle",
+  "type": "collection",
+  "entry": [
+    {
+      "fullUrl": "urn:uuid:WARD-H-001-RECORD-01",
+      "resource": {
+        "resourceType": "Composition",
+        "id": "WARD-H-001-RECORD-01",
+        "status": "preliminary",
+        "title": "<脱敏样例文书>",
+        "date": "2026-03-02T23:40:00+08:00",
+        "authoredOn": "2026-03-03T00:30:00+08:00",
+        "identifier": [
+          {
+            "system": "https://his.example-hospital.invalid/fhir/identifier/encounter",
+            "value": "WARD-H-001"
+          }
+        ],
+        "type": {
+          "coding": [
+            {
+              "system": "https://example-hospital.invalid/fhir/CodeSystem/doc-type",
+              "code": "restraint_record"
+            }
+          ]
+        },
+        "author": [
+          {
+            "reference": "Practitioner/<EXAMPLE_PRACTITIONER>"
+          }
+        ],
+        "section": [
+          {
+            "title": "约束经过",
+            "text": "约束起始时间：2026-03-02 23:40。\n约束等级：二级保护。\n执行护士：<EXAMPLE_NURSE>。\n观察记录：约束期间生命体征平稳。\n约束时长：120 分钟。"
+          },
+          {
+            "title": "交接补充",
+            "text": "观察记录：交班时追加说明。"
+          }
+        ]
+      }
+    }
+  ]
+}

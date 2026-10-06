@@ -1,0 +1,61 @@
+{
+  "_comment": "脱敏合成夹具：签署页与护理记录均无 date / authoredOn，段落内只写时分无日期 → 时刻抽不出，须标 missing 而非填当前时间。",
+  "resourceType": "Bundle",
+  "type": "collection",
+  "entry": [
+    {
+      "fullUrl": "urn:uuid:WARD-D-001-SIGN-01",
+      "resource": {
+        "resourceType": "Composition",
+        "id": "WARD-D-001-SIGN-01",
+        "status": "preliminary",
+        "identifier": [
+          {
+            "system": "https://his.example-hospital.invalid/fhir/identifier/encounter",
+            "value": "WARD-D-001"
+          }
+        ],
+        "type": {
+          "coding": [
+            {
+              "code": "sign_page"
+            }
+          ]
+        },
+        "section": [
+          {
+            "title": "签署页",
+            "text": "签署时间：23时45分。\n护士签字：<EXAMPLE_NURSE>。"
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:WARD-D-001-NURSE-01",
+      "resource": {
+        "resourceType": "Composition",
+        "id": "WARD-D-001-NURSE-01",
+        "status": "preliminary",
+        "identifier": [
+          {
+            "system": "https://his.example-hospital.invalid/fhir/identifier/encounter",
+            "value": "WARD-D-001"
+          }
+        ],
+        "type": {
+          "coding": [
+            {
+              "code": "nursing_record"
+            }
+          ]
+        },
+        "section": [
+          {
+            "title": "护理记录",
+            "text": "巡视时间：02时10分。\n病情描述：夜间睡眠差。"
+          }
+        ]
+      }
+    }
+  ]
+}

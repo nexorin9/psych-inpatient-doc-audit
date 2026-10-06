@@ -1,0 +1,115 @@
+{
+  "_comment": "脱敏合成夹具：两条 Composition 用了同一个 id，正文不同。两条都必须进 unresolved 交人工——既不合并（合并会拼出没人敢归档的文书），也不取第一条（程序无权替人决定以哪份为准）。",
+  "resourceType": "Bundle",
+  "type": "collection",
+  "entry": [
+    {
+      "fullUrl": "urn:uuid:WARD-H-006-RECORD-01",
+      "resource": {
+        "resourceType": "Composition",
+        "id": "WARD-H-006-RECORD-01",
+        "status": "preliminary",
+        "title": "<脱敏样例文书>",
+        "identifier": [
+          {
+            "system": "https://his.example-hospital.invalid/fhir/identifier/encounter",
+            "value": "WARD-H-006"
+          }
+        ],
+        "type": {
+          "coding": [
+            {
+              "system": "https://example-hospital.invalid/fhir/CodeSystem/doc-type",
+              "code": "restraint_record"
+            }
+          ]
+        },
+        "author": [
+          {
+            "reference": "Practitioner/<EXAMPLE_PRACTITIONER>"
+          }
+        ],
+        "date": "2026-03-02T08:30:00+08:00",
+        "authoredOn": "2026-03-02T08:55:00+08:00",
+        "section": [
+          {
+            "title": "约束经过",
+            "text": "约束起始时间：2026-03-02 23:40。\n约束等级：二级保护。"
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:WARD-H-006-RECORD-01",
+      "resource": {
+        "resourceType": "Composition",
+        "id": "WARD-H-006-RECORD-01",
+        "status": "preliminary",
+        "title": "<脱敏样例文书>",
+        "identifier": [
+          {
+            "system": "https://his.example-hospital.invalid/fhir/identifier/encounter",
+            "value": "WARD-H-006"
+          }
+        ],
+        "type": {
+          "coding": [
+            {
+              "system": "https://example-hospital.invalid/fhir/CodeSystem/doc-type",
+              "code": "restraint_record"
+            }
+          ]
+        },
+        "author": [
+          {
+            "reference": "Practitioner/<EXAMPLE_PRACTITIONER>"
+          }
+        ],
+        "date": "2026-03-02T08:30:00+08:00",
+        "authoredOn": "2026-03-02T09:10:00+08:00",
+        "section": [
+          {
+            "title": "约束经过",
+            "text": "约束起始时间：2026-03-02 23:55。\n约束等级：三级保护。"
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:WARD-H-006-RELEASE-01",
+      "resource": {
+        "resourceType": "Composition",
+        "id": "WARD-H-006-RELEASE-01",
+        "status": "preliminary",
+        "title": "<脱敏样例文书>",
+        "identifier": [
+          {
+            "system": "https://his.example-hospital.invalid/fhir/identifier/encounter",
+            "value": "WARD-H-006"
+          }
+        ],
+        "type": {
+          "coding": [
+            {
+              "system": "https://example-hospital.invalid/fhir/CodeSystem/doc-type",
+              "code": "restraint_release"
+            }
+          ]
+        },
+        "author": [
+          {
+            "reference": "Practitioner/<EXAMPLE_PRACTITIONER>"
+          }
+        ],
+        "date": "2026-03-03T06:20:00+08:00",
+        "authoredOn": "2026-03-02T08:55:00+08:00",
+        "section": [
+          {
+            "title": "解除经过",
+            "text": "解除时间：2026-03-03 06:10。"
+          }
+        ]
+      }
+    }
+  ]
+}

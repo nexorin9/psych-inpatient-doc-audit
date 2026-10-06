@@ -1,0 +1,204 @@
+{
+  "_comment": "脱敏合成夹具：section 键整个缺失 / section 为空数组 / null 段文本 / 缺 type.coding / 坏日期五种结构问题混在一包里。只有后两种让件整件不可用，前三种都只是段级问题（件仍算成功），最后一件好的必须照常解析成功——部分成功不是整包丢。",
+  "resourceType": "Bundle",
+  "type": "collection",
+  "entry": [
+    {
+      "fullUrl": "urn:uuid:WARD-H-005-CONSENT-01",
+      "resource": {
+        "resourceType": "Composition",
+        "id": "WARD-H-005-CONSENT-01",
+        "status": "preliminary",
+        "title": "<脱敏样例文书>",
+        "identifier": [
+          {
+            "system": "https://his.example-hospital.invalid/fhir/identifier/encounter",
+            "value": "WARD-H-005"
+          }
+        ],
+        "type": {
+          "coding": [
+            {
+              "system": "https://example-hospital.invalid/fhir/CodeSystem/doc-type",
+              "code": "restraint_consent"
+            }
+          ]
+        },
+        "author": [
+          {
+            "reference": "Practitioner/<EXAMPLE_PRACTITIONER>"
+          }
+        ],
+        "date": "2026-03-02T08:30:00+08:00",
+        "authoredOn": "2026-03-02T08:55:00+08:00"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:WARD-H-005-RECORD-01",
+      "resource": {
+        "resourceType": "Composition",
+        "id": "WARD-H-005-RECORD-01",
+        "status": "preliminary",
+        "title": "<脱敏样例文书>",
+        "identifier": [
+          {
+            "system": "https://his.example-hospital.invalid/fhir/identifier/encounter",
+            "value": "WARD-H-005"
+          }
+        ],
+        "type": {
+          "coding": [
+            {
+              "system": "https://example-hospital.invalid/fhir/CodeSystem/doc-type",
+              "code": "restraint_record"
+            }
+          ]
+        },
+        "author": [
+          {
+            "reference": "Practitioner/<EXAMPLE_PRACTITIONER>"
+          }
+        ],
+        "date": "2026-03-02T08:30:00+08:00",
+        "authoredOn": "2026-03-02T08:55:00+08:00",
+        "section": [
+          {
+            "title": "约束经过",
+            "text": "约束起始时间：2026-03-02 23:40。"
+          },
+          {
+            "title": "执行护士",
+            "text": null
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:WARD-H-005-SIGNPAGE-01",
+      "resource": {
+        "resourceType": "Composition",
+        "id": "WARD-H-005-SIGNPAGE-01",
+        "status": "preliminary",
+        "title": "<脱敏样例文书>",
+        "identifier": [
+          {
+            "system": "https://his.example-hospital.invalid/fhir/identifier/encounter",
+            "value": "WARD-H-005"
+          }
+        ],
+        "type": {
+          "coding": [
+            {
+              "system": "https://example-hospital.invalid/fhir/CodeSystem/doc-type",
+              "code": "sign_page"
+            }
+          ]
+        },
+        "author": [
+          {
+            "reference": "Practitioner/<EXAMPLE_PRACTITIONER>"
+          }
+        ],
+        "date": "2026-03-02T08:30:00+08:00",
+        "authoredOn": "2026-03-02T08:55:00+08:00",
+        "section": []
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:WARD-H-005-SIGN-01",
+      "resource": {
+        "resourceType": "Composition",
+        "id": "WARD-H-005-SIGN-01",
+        "status": "preliminary",
+        "title": "<脱敏样例文书>",
+        "identifier": [
+          {
+            "system": "https://his.example-hospital.invalid/fhir/identifier/encounter",
+            "value": "WARD-H-005"
+          }
+        ],
+        "type": {},
+        "author": [
+          {
+            "reference": "Practitioner/<EXAMPLE_PRACTITIONER>"
+          }
+        ],
+        "date": "2026-03-02T08:30:00+08:00",
+        "authoredOn": "2026-03-02T08:55:00+08:00",
+        "section": []
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:WARD-H-005-RELEASE-01",
+      "resource": {
+        "resourceType": "Composition",
+        "id": "WARD-H-005-RELEASE-01",
+        "status": "preliminary",
+        "title": "<脱敏样例文书>",
+        "identifier": [
+          {
+            "system": "https://his.example-hospital.invalid/fhir/identifier/encounter",
+            "value": "WARD-H-005"
+          }
+        ],
+        "type": {
+          "coding": [
+            {
+              "system": "https://example-hospital.invalid/fhir/CodeSystem/doc-type",
+              "code": "restraint_release"
+            }
+          ]
+        },
+        "author": [
+          {
+            "reference": "Practitioner/<EXAMPLE_PRACTITIONER>"
+          }
+        ],
+        "date": "2026/03/03 06:20",
+        "authoredOn": "2026-03-02T08:55:00+08:00",
+        "section": [
+          {
+            "title": "解除经过",
+            "text": "解除时间：2026-03-03 06:10。"
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:WARD-H-005-ASSESS-01",
+      "resource": {
+        "resourceType": "Composition",
+        "id": "WARD-H-005-ASSESS-01",
+        "status": "preliminary",
+        "title": "<脱敏样例文书>",
+        "identifier": [
+          {
+            "system": "https://his.example-hospital.invalid/fhir/identifier/encounter",
+            "value": "WARD-H-005"
+          }
+        ],
+        "type": {
+          "coding": [
+            {
+              "system": "https://example-hospital.invalid/fhir/CodeSystem/doc-type",
+              "code": "assessment_report"
+            }
+          ]
+        },
+        "author": [
+          {
+            "reference": "Practitioner/<EXAMPLE_PRACTITIONER>"
+          }
+        ],
+        "date": "2026-03-02T08:30:00+08:00",
+        "authoredOn": "2026-03-02T08:55:00+08:00",
+        "section": [
+          {
+            "title": "评估结论",
+            "text": "风险等级：二级。\n评估时间：2026-03-02 09:00。"
+          }
+        ]
+      }
+    }
+  ]
+}

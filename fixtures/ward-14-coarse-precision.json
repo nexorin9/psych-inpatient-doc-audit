@@ -1,0 +1,83 @@
+{
+  "_comment": "脱敏合成夹具：精度不一致。患方知情同意件的 authoredOn 只写了一个日期（FHIR dateTime 允许 `2026-03-11`），约束起始时间写到分 2026-03-10 08:00——按字面值 00:00 去比会凭空造出「先约束、后知情」。正确处置是：低精度时刻不参与判违规，交人工。配套 ward-13（签署时刻写到秒、同场景）做对照。",
+  "resourceType": "Bundle",
+  "type": "collection",
+  "entry": [
+    {
+      "fullUrl": "urn:uuid:WARD-P-001-CONSENT-01",
+      "resource": {
+        "resourceType": "Composition",
+        "id": "WARD-P-001-CONSENT-01",
+        "status": "preliminary",
+        "title": "<脱敏样例文书>",
+        "identifier": [
+          {
+            "system": "https://his.example-hospital.invalid/fhir/identifier/encounter",
+            "value": "WARD-P-001"
+          }
+        ],
+        "date": "2026-03-10T07:40:00+08:00",
+        "type": {
+          "coding": [
+            {
+              "system": "https://example-hospital.invalid/fhir/CodeSystem/doc-type",
+              "code": "restraint_consent"
+            }
+          ]
+        },
+        "author": [
+          {
+            "reference": "Practitioner/<EXAMPLE_PRACTITIONER>"
+          }
+        ],
+        "section": [
+          {
+            "title": "约束事由",
+            "text": "约束事由：夜间反复冲动，需短时保护。\n保护等级：二级保护。"
+          },
+          {
+            "title": "患方知情同意",
+            "text": "患方意见：已知情同意，同意按护理常规采取保护措施。\n约束起始时间：2026-03-10 08:00。\n执行护士：<EXAMPLE_NURSE>。\n患方签字：<EXAMPLE_SIGNATURE>。"
+          }
+        ],
+        "authoredOn": "2026-03-11"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:WARD-P-001-RECORD-01",
+      "resource": {
+        "resourceType": "Composition",
+        "id": "WARD-P-001-RECORD-01",
+        "status": "preliminary",
+        "title": "<脱敏样例文书>",
+        "identifier": [
+          {
+            "system": "https://his.example-hospital.invalid/fhir/identifier/encounter",
+            "value": "WARD-P-001"
+          }
+        ],
+        "date": "2026-03-10T08:00:00+08:00",
+        "type": {
+          "coding": [
+            {
+              "system": "https://example-hospital.invalid/fhir/CodeSystem/doc-type",
+              "code": "restraint_record"
+            }
+          ]
+        },
+        "author": [
+          {
+            "reference": "Practitioner/<EXAMPLE_PRACTITIONER>"
+          }
+        ],
+        "section": [
+          {
+            "title": "约束经过",
+            "text": "约束起始时间：2026-03-10 08:00。\n约束等级：二级保护。\n执行护士：<EXAMPLE_NURSE>。\n观察记录：约束期间生命体征平稳。\n约束时长：120 分钟。"
+          }
+        ],
+        "authoredOn": "2026-03-10T08:20:00+08:00"
+      }
+    }
+  ]
+}
